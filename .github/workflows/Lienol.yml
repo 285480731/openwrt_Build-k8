@@ -11,9 +11,11 @@ on:
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'ssh'
+        description: 'SSH connection to Actions'
         required: false
         default: 'false'
+  schedule:
+    - cron: 0 21 */5 * * 
 
 env:
   UPLOAD_BIN_DIR: false
