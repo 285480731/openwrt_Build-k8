@@ -1,86 +1,59 @@
-### 系统基础配置
+### Target/Arch
 CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_64=y
 CONFIG_TARGET_x86_64_DEVICE_generic=y
-CONFIG_TARGET_KERNEL_PARTSIZE=60
-CONFIG_TARGET_ROOTFS_PARTSIZE=1200  # 扩展根分区大小
-CONFIG_PACKAGE_procd-ujail=y
 
-### 核心网络组件
-CONFIG_PACKAGE_firewall=y  # 改为内置防火墙
+### Core Packages
 CONFIG_PACKAGE_ip-full=y
-CONFIG_PACKAGE_dnsmasq-full=y  # 完整版DNSmasq
-CONFIG_PACKAGE_curl=y  # 新增curl工具
-CONFIG_PACKAGE_ipset=y
 CONFIG_PACKAGE_iptables-nft=y
 CONFIG_PACKAGE_ip6tables-nft=y
-CONFIG_PACKAGE_xtables-nft=y
-CONFIG_PACKAGE_ca-bundle=y  # SSL证书包
-
-### IPv6增强配置
-CONFIG_PACKAGE_ipv6helper=y
-CONFIG_PACKAGE_kmod-ipt-nat6=y
-CONFIG_PACKAGE_kmod-nf-nat6=y
-CONFIG_PACKAGE_kmod-ip6tables-extra=y
-
-### 性能优化
 CONFIG_PACKAGE_kmod-tcp-bbr=y
-CONFIG_PACKAGE_kmod-crypto-acompress=y
-CONFIG_PACKAGE_kmod-lib-zstd=y
-CONFIG_ZSTD_OPTIMIZE_O3=y  # 保持O3优化但添加测试建议
+CONFIG_PACKAGE_kmod-ipt-fullconenat=y  # 重要：改为内置模块提升稳定性
 
-### 存储管理
-CONFIG_PACKAGE_btrfs-progs=y
-CONFIG_PACKAGE_parted=y
-CONFIG_PACKAGE_f2fs-tools=y  # 新增F2FS支持
-CONFIG_PACKAGE_resize2fs=y  # 分区调整工具
-CONFIG_PACKAGE_lsblk=y
-CONFIG_PACKAGE_blkid=y
-CONFIG_PACKAGE_smartmontools=y
+### 网络功能优化
+CONFIG_PACKAGE_luci-app-turboacc=y
+CONFIG_PACKAGE_luci-app-turboacc_INCLUDE_BBR_CCA=y
+CONFIG_PACKAGE_luci-app-turboacc_INCLUDE_OFFLOADING=y
+CONFIG_PACKAGE_kmod-fast-classifier=y  # 新增：Shortcut FE 加速
+
+### 存储精简
+CONFIG_TARGET_KERNEL_PARTSIZE=60       # 原60 → 32
+CONFIG_TARGET_ROOTFS_PARTSIZE=900     # 原900 → 600
+# CONFIG_PACKAGE_kmod-fs-btrfs is not set  # 移除Btrfs支持
+# CONFIG_PACKAGE_btrfs-progs is not set
 
 ### 安全增强
 CONFIG_PACKAGE_openssh-sftp-server=y
-CONFIG_PACKAGE_fail2ban=y  # 新增防暴力破解
 CONFIG_PACKAGE_libcap-bin=y
 
-### 核心工具
-CONFIG_PACKAGE_bash=y
-CONFIG_PACKAGE_coreutils=y
-CONFIG_PACKAGE_coreutils-nohup=y
-CONFIG_PACKAGE_unzip=y
-CONFIG_PACKAGE_tar=y
-CONFIG_PACKAGE_jq=y  # 新增JSON处理工具
+### 依赖修正
+CONFIG_PACKAGE_libip4tc=y              # 原m → y
+CONFIG_PACKAGE_libip6tc=y              # 原m → y
 
-### 代理相关
-# CONFIG_PACKAGE_luci-app-mihomo=y
-CONFIG_PACKAGE_luci-app-openclash=y  # 建议二选一
-# CONFIG_PACKAGE_sing-box=y
-# CONFIG_SING_BOX_WITH_WIREGUARD=y
-# CONFIG_SING_BOX_WITH_QUIC=y
+### 核心代理组件
+CONFIG_PACKAGE_mihomo=y
+CONFIG_PACKAGE_sing-box=y
+CONFIG_SINGBOX_WITH_CLASH_API=y
+CONFIG_SINGBOX_WITH_ECH=y
+CONFIG_SINGBOX_WITH_GVISOR=y
+CONFIG_SINGBOX_WITH_QUIC=y
 
-### 界面增强
+### LuCI 界面
 CONFIG_PACKAGE_luci-theme-opentopd=y
-CONFIG_PACKAGE_luci-app-diskman=y
+CONFIG_PACKAGE_luci-app-openclash=y
 CONFIG_PACKAGE_luci-app-store=y
-CONFIG_PACKAGE_luci-lib-xterm=y
+CONFIG_PACKAGE_luci-app-diskman=y
 
-### 依赖库
-CONFIG_PACKAGE_libsqlite3=y
-CONFIG_PACKAGE_libstdcpp=y
-CONFIG_PACKAGE_libyaml=y
-CONFIG_PACKAGE_lua=y  # 新增Lua运行时
-CONFIG_PACKAGE_luci-lib-fs=y
-
-### 内核模块
-CONFIG_PACKAGE_kmod-macvlan=y
-CONFIG_PACKAGE_kmod-tun=y
-CONFIG_PACKAGE_kmod-inet-diag=y
-CONFIG_PACKAGE_kmod-nf-conncount=y
-
-### 多WAN支持
-CONFIG_PACKAGE_luci-app-mwan3=y
-CONFIG_PACKAGE_mwan3=y
+### 诊断工具
+CONFIG_PACKAGE_iperf3=y                # 新增：网络测速工具
+CONFIG_PACKAGE_tcpdump=y               # 新增：抓包分析
 
 ### 编译优化
-CONFIG_USE_SQLITE=y
-CONFIG_USE_LUA=y
+CONFIG_ZSTD_OPTIMIZE_O3=y
+CONFIG_STRIP_KERNEL_EXPORTS=y
+CONFIG_USE_MKLIBS=y
+
+### 以下为原配置保留项
+CONFIG_PACKAGE_6in4=y
+CONFIG_PACKAGE_chinadns-ng=y
+
